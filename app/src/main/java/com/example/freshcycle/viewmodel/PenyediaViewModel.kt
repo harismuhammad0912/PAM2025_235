@@ -11,6 +11,8 @@ fun CreationExtras.freshCycleApplication(): FreshCycleApplication =
 
 object PenyediaViewModel {
     val Factory = viewModelFactory {
-        // Nanti kita akan mendaftarkan LoginViewModel, HomeViewModel, dll di sini
+        initializer {
+            AuthViewModel(freshCycleApplication().container.freshCycleRepository)
+        }
     }
 }
