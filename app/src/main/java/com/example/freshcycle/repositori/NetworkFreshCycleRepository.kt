@@ -72,6 +72,7 @@ class NetworkFreshCycleRepository(
         documentRef.set(transaksiWithId).await()
     }
 
+
     // Update Status Cucian (REQ-10, REQ-172)
     override suspend fun updateStatusTransaksi(id: String, statusBaru: String) {
         firestore.collection("transaksi").document(id)
