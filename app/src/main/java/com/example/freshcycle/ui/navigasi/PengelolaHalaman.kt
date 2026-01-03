@@ -8,8 +8,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.freshcycle.ui.view.LoginScreen
 import com.example.freshcycle.ui.view.RegisterScreen
+import com.example.freshcycle.ui.view.DashboardAdminScreen
+import com.example.freshcycle.ui.view.DashboardPelangganScreen
 
-// Daftar rute halaman sesuai kebutuhan SRS
 enum class Halaman {
     Login,
     Register,
@@ -24,10 +25,9 @@ fun PengelolaHalaman(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Halaman.Login.name, // Aplikasi dimulai dari Login (REQ-142)
+        startDestination = Halaman.Login.name,
         modifier = modifier
     ) {
-        // Layar Login (REQ-02)
         composable(route = Halaman.Login.name) {
             LoginScreen(
                 onLoginSuccess = { role ->
@@ -43,7 +43,6 @@ fun PengelolaHalaman(
             )
         }
 
-        // Layar Registrasi (REQ-01)
         composable(route = Halaman.Register.name) {
             RegisterScreen(
                 onRegisterSuccess = {
@@ -52,14 +51,13 @@ fun PengelolaHalaman(
             )
         }
 
-        // Dashboard Admin (REQ-113) - Akan kita buat kodenya setelah ini
+        // Memanggil fungsi yang sudah dibuat di DashboardScreen.kt
         composable(route = Halaman.DashboardAdmin.name) {
-            // Tampilan Dashboard Admin
+            DashboardAdminScreen()
         }
 
-        // Dashboard Pelanggan (REQ-116) - Akan kita buat kodenya setelah ini
         composable(route = Halaman.DashboardPelanggan.name) {
-            // Tampilan Dashboard Pelanggan
+            DashboardPelangganScreen()
         }
     }
 }
