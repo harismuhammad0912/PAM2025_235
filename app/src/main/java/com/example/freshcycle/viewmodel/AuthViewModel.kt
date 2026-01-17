@@ -1,4 +1,4 @@
-package com.example.freshcycle.viewmodel
+package com.example.freshcycle.ui.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -7,53 +7,44 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.freshcycle.modeldata.User
 import com.example.freshcycle.repositori.FreshCycleRepository
-import kotlinx.coroutines.flow.first
+import com.example.freshcycle.utils.PasswordHasher
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
-// State untuk menampung inputan user saat registrasi/login (REQ-01)
-data class AuthUiState(
-    val nama: String = "",
-    val nomorWA: String = "",
-    val role: String = "Pelanggan",
-    val isLoginSuccess: Boolean? = null,
-    val errorMessage: String? = null
-)
-
 class AuthViewModel(private val repository: FreshCycleRepository) : ViewModel() {
+    var nama by mutableStateOf("")
+    var nomorWA by mutableStateOf("")
+    var password by mutableStateOf("")
+    var role by mutableStateOf("Pelanggan") // Default sesuai SRS REQ-03
 
-    var uiState by mutableStateOf(AuthUiState())
-        private set
-
-    fun updateUiState(newUiState: AuthUiState) {
-        uiState = newUiState
-    }
-
-    // Fungsi Registrasi Pelanggan Baru (REQ-01)
-    fun register() {
+    fun register(onSuccess: () -> Unit, onError: (String) -> Unit) {
         viewModelScope.launch {
             try {
-                val user = User(
-                    nama = uiState.nama,
-                    nomorWA = uiState.nomorWA,
-                    role = "Pelanggan"
-                )
-                repository.registerUser(user)
-                uiState = uiState.copy(isLoginSuccess = true)
+                if (nama.isBlank() || nomorWA.isBlank() || password.isBlank()) {
+                    onError("Semua kolom harus diisi!")
+                    return@launch
+                }
+                val hashedPw = PasswordHasher.hashPassword(password)
+                val userBaru = User(nama, nomorWA, hashedPw, role)
+                repository.registerUser(userBaru)
+                onSuccess() // Memicu navigasi ke Login
             } catch (e: Exception) {
-                uiState = uiState.copy(errorMessage = e.message)
+                onError("Gagal Daftar: ${e.message}")
             }
         }
     }
 
-    // Fungsi Login (REQ-02)
-    fun login() {
+    fun login(onSuccess: (String, String) -> Unit, onError: (String) -> Unit) {
         viewModelScope.launch {
-            val user = repository.getUserByWA(uiState.nomorWA).first()
-            if (user != null) {
-                // Berhasil login (REQ-149)
-                uiState = uiState.copy(isLoginSuccess = true, role = user.role)
-            } else {
-                uiState = uiState.copy(errorMessage = "Nomor WhatsApp tidak terdaftar")
+            try {
+                val user = repository.getUserByWA(nomorWA).firstOrNull()
+                if (user != null && user.password == PasswordHasher.hashPassword(password)) {
+                    onSuccess(user.role, user.nomorWA)
+                } else {
+                    onError("Nomor WA atau Password Salah!")
+                }
+            } catch (e: Exception) {
+                onError("Login Error: ${e.message}")
             }
         }
     }

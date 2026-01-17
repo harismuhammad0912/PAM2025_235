@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "610204226584",
+    "project_id": "freshcycle-90332",
+    "storage_bucket": "freshcycle-90332.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:610204226584:android:5151daf1140b6d84099f6d",
+        "android_client_info": {
+          "package_name": "com.example.freshcycle"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAa1A-wALkMIdL8jHBEKtAlp2w9HtZhcOI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

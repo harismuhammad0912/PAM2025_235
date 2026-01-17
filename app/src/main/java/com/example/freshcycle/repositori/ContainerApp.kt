@@ -7,6 +7,7 @@ interface ContainerApp {
 }
 
 class DefaultContainerApp : ContainerApp {
+    // Pastikan Firebase sudah di-setup di project Anda
     override val freshCycleRepository: FreshCycleRepository by lazy {
         NetworkFreshCycleRepository(FirebaseFirestore.getInstance())
     }
